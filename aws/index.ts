@@ -1,5 +1,6 @@
 import cdk = require('@aws-cdk/cdk');
 import s3 = require('@aws-cdk/aws-s3');
+import cloudfront = require('@aws-cdk/aws-cloudfront');
  
 class StaticSiteStack extends cdk.Stack {
     constructor(parent: cdk.App, id: string, props?: cdk.StackProps) {
@@ -7,31 +8,49 @@ class StaticSiteStack extends cdk.Stack {
 
         const bucketName = 'aws-cdk-sandbox-static-site';
 
-        const bucketResource = new s3.cloudformation.BucketResource(this, 'staticSiteResource', {
-            bucketName,
-            accessControl: 'PublicRead',
-            websiteConfiguration: {
-                indexDocument: 'index.html'
+        const bucket = new s3.Bucket(this, bucketName, {
+            bucketName
+        });
+
+
+        const oaiResource = new cloudfront.cloudformation.CloudFrontOriginAccessIdentityResource(this, 'staticSiteOAIResource', {
+            cloudFrontOriginAccessIdentityConfig: {
+                comment: 'static site'
             }
         })
 
         new s3.cloudformation.BucketPolicyResource(this, 'staticSitePolicyResource', {
-            bucket: bucketResource.bucketName,
+            bucket: bucket.bucketName,
             policyDocument: {
                 Statement: [
                     {
-                        Sid: 'AddPerm',
+                        Sid: 'cdn',
                         Effect: 'Allow',
-                        Principal: '*',
+                        Principal: {
+                            AWS: `arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${oaiResource.cloudFrontOriginAccessIdentityId}`
+                        },
                         Action: [
                             's3:GetObject'
                         ],
                         Resource: [
-                            `arn:aws:s3:::${bucketResource.bucketName}/*`
+                            `arn:aws:s3:::${bucket.bucketName}/*`
                         ]
                     }
                 ]
             }
+        })
+
+
+        new cloudfront.CloudFrontWebDistribution(this, 'staticSiteDistribution', {
+            originConfigs: [
+                {
+                    s3OriginSource: {
+                        s3BucketSource: bucket,
+                        originAccessIdentity: oaiResource,
+                    },
+                    behaviors : [ {isDefaultBehavior: true} ]
+                }
+            ]
         })
     }
 }

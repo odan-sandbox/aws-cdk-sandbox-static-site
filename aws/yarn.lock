@@ -2,6 +2,23 @@
 # yarn lockfile v1
 
 
+"@aws-cdk/aws-certificatemanager@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-certificatemanager/-/aws-certificatemanager-0.10.0.tgz#1e1147368e451e6bc04beb8b4bc5b9acc53edd3c"
+  dependencies:
+    "@aws-cdk/aws-iam" "^0.10.0"
+    "@aws-cdk/cdk" "^0.10.0"
+
+"@aws-cdk/aws-cloudfront@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-cloudfront/-/aws-cloudfront-0.10.0.tgz#dbffac9451fbebb770bc56382d6686aa9de0c589"
+  dependencies:
+    "@aws-cdk/aws-certificatemanager" "^0.10.0"
+    "@aws-cdk/aws-iam" "^0.10.0"
+    "@aws-cdk/aws-kms" "^0.10.0"
+    "@aws-cdk/aws-s3" "^0.10.0"
+    "@aws-cdk/cdk" "^0.10.0"
+
 "@aws-cdk/aws-codepipeline-api@^0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-codepipeline-api/-/aws-codepipeline-api-0.10.0.tgz#bb6a23f8341db078cd9db279eac84d7f0b6446ce"
