@@ -10,8 +10,7 @@ class StaticSiteStack extends cdk.Stack {
 
     const bucket = new s3.Bucket(this, bucketName, {
       bucketName
-    });
-
+    })
 
     const oaiResource = new cloudfront.cloudformation.CloudFrontOriginAccessIdentityResource(this, 'staticSiteOAIResource', {
       cloudFrontOriginAccessIdentityConfig: {
@@ -40,7 +39,6 @@ class StaticSiteStack extends cdk.Stack {
       }
     })
 
-
     new cloudfront.CloudFrontWebDistribution(this, 'staticSiteDistribution', {
       originConfigs: [
         {
@@ -54,12 +52,9 @@ class StaticSiteStack extends cdk.Stack {
     })
   }
 }
-class StaticSiteApp extends cdk.App {
-  constructor(argv: string[]) {
-    super(argv);
 
-    new StaticSiteStack(this, 'static-site-stack')
-  }
-}
+const app = new cdk.App(process.argv)
 
-process.stdout.write(new StaticSiteApp(process.argv).run());
+new StaticSiteStack(app, 'static-site-stack')
+
+process.stdout.write(app.run());
